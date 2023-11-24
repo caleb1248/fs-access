@@ -3,7 +3,7 @@ export default function element<K extends keyof HTMLElementTagNameMap>(
   props: Partial<
     HTMLElementTagNameMap[K] & { attributes: { [k: string]: string } }
   > | null,
-  children?: (string | Node)[]
+  ...children: (string | Node)[]
 ) {
   props = props || {};
   children = !children ? [] : Array.isArray(children) ? children : [children];
