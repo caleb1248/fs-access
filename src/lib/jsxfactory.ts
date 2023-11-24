@@ -1,4 +1,4 @@
-export default function element<K extends keyof HTMLElementTagNameMap>(
+const elementFactory = function <K extends keyof HTMLElementTagNameMap>(
   tag: K,
   props: Partial<
     HTMLElementTagNameMap[K] & { attributes: { [k: string]: string } }
@@ -21,4 +21,7 @@ export default function element<K extends keyof HTMLElementTagNameMap>(
       element.setAttribute(name, value);
 
   return element;
-}
+};
+
+declare var element: typeof elementFactory;
+self.element = elementFactory;

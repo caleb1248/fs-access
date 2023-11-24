@@ -15,6 +15,7 @@
   "dependencies": {
     "binaryextensions": "^6.7.0",
     "buffer": "^6.0.3",
+    "path-browserify": "^1.0.1",
     "textextensions": "^6.7.0"
   }
 }
