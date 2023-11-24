@@ -11,5 +11,10 @@
   "devDependencies": {
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "binaryextensions": "^6.7.0",
+    "buffer": "^6.0.3",
+    "textextensions": "^6.7.0"
   }
 }
