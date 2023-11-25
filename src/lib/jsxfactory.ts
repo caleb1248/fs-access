@@ -1,8 +1,6 @@
 const elementFactory = function <K extends keyof HTMLElementTagNameMap>(
   tag: K,
-  props: Partial<
-    HTMLElementTagNameMap[K] & { attributes: { [k: string]: string } }
-  > | null,
+  props: { attributes?: { [k: string]: string }; [k: string]: unknown } | null,
   ...children: (string | Node)[]
 ) {
   props = props || {};
@@ -10,10 +8,27 @@ const elementFactory = function <K extends keyof HTMLElementTagNameMap>(
   //@ts-ignore
   const { attributes, ...rest } = props;
 
+  const eventListeners: { type: string; listener: EventListener }[] = [];
+
+  for (const key in rest) {
+    if (key.startsWith("on:")) {
+      eventListeners.push({
+        type: key.replace("on:", ""),
+        listener: rest[key] as EventListener,
+      });
+
+      delete rest[key];
+    }
+  }
+
   let element: HTMLElementTagNameMap[K] = Object.assign(
     document.createElement(tag),
     rest
   );
+
+  for (const { type, listener } of eventListeners)
+    element.addEventListener(type, listener);
+
   element.replaceChildren(...children);
 
   if (attributes)
