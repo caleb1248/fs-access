@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": true,
 
     "jsx": "react",
-    "jsxFactory": "element"
+    "jsxFactory": "self.element"
   },
   "include": ["src"]
 }
