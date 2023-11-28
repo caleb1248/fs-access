@@ -1,5 +1,4 @@
 import * as monaco from "monaco-editor";
-
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
 import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
@@ -27,10 +26,14 @@ self.MonacoEnvironment = {
     }
   },
 };
+import fsWorker from "./lib/fsLoader.worker?worker";
+import webcontainer from "./lib/webcontainer";
 
 let currentFile: FileSystemFileHandle;
 let currentPath: string;
 let currentFolder: FileSystemDirectoryHandle;
+
+const fsLoader = new fsWorker();
 
 function clearModels() {
   monaco.editor.getModels().forEach((model) => model.dispose());
@@ -60,10 +63,15 @@ async function openFolder() {
 
   if (await readWritePermission(handle)) {
     currentFolder = handle;
-    const stuff = handle.values();
-    for await (const value of stuff) {
-      console.log(value);
-    }
+
+    fsLoader.onmessage = async (e) => {
+      await webcontainer.mount(e.data);
+      alert("files mounted!");
+      webcontainer.fs.watch("node_modules", {}, (e) => console.log("change"));
+      webcontainer.spawn("npm", ["i"]);
+    };
+
+    fsLoader.postMessage(handle);
     clearModels();
     // const fileModel = monaco.editor.createModel(
     //   text,
