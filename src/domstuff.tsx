@@ -27,7 +27,7 @@ self.MonacoEnvironment = {
   },
 };
 import fsWorker from "./lib/fsLoader.worker?worker";
-import webcontainer from "./lib/webcontainer";
+import createTerminal from "./lib/webcontainer";
 
 let currentFile: FileSystemFileHandle;
 let currentPath: string;
@@ -65,10 +65,11 @@ async function openFolder() {
     currentFolder = handle;
 
     fsLoader.onmessage = async (e) => {
-      await webcontainer.mount(e.data);
-      alert("files mounted!");
-      webcontainer.fs.watch("node_modules", {}, (e) => console.log("change"));
-      webcontainer.spawn("npm", ["i"]);
+      const { terminal, terminalDiv, webcontainer } = await createTerminal(
+        e.data
+      );
+      console.log("eee");
+      document.querySelector("#app")?.appendChild(terminalDiv);
     };
 
     fsLoader.postMessage(handle);
@@ -124,8 +125,14 @@ const app = (
       <button on:click={() => openFile()}>Open File</button>
       <button on:click={() => openFolder()}>Open Folder</button>
     </div>
-    {editorDiv}
+    <div className="main">
+      {editorDiv}
+      <div className="terminalContainer">
+        <div className="terminal"></div>
+      </div>
+    </div>
   </div>
 );
+console.log(app);
 
 export default app;
