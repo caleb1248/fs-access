@@ -1,5 +1,6 @@
 import { type FileSystemTree, WebContainer } from "@webcontainer/api";
 import { Terminal } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
 
 async function createTerminal(files: FileSystemTree) {
   console.log("booting webcontainer...");
@@ -9,10 +10,18 @@ async function createTerminal(files: FileSystemTree) {
 
   const terminalDiv = document.querySelector(".terminal") as HTMLDivElement;
 
+  const fitAddon = new FitAddon();
+
   const terminal = new Terminal({ convertEol: true });
+  terminal.loadAddon(fitAddon);
   terminal.open(terminalDiv);
 
-  const shellProcess = await webcontainer.spawn("jsh");
+  const shellProcess = await webcontainer.spawn("jsh", {
+    terminal: {
+      cols: terminal.cols,
+      rows: terminal.rows,
+    },
+  });
 
   shellProcess.output.pipeTo(
     new WritableStream({
@@ -21,6 +30,14 @@ async function createTerminal(files: FileSystemTree) {
       },
     })
   );
+
+  window.addEventListener("resize", () => {
+    fitAddon.fit();
+    shellProcess.resize({
+      cols: terminal.cols,
+      rows: terminal.rows,
+    });
+  });
 
   const input = shellProcess.input.getWriter();
   terminal.onData((data) => {
