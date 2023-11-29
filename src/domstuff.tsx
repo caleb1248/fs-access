@@ -68,8 +68,6 @@ async function openFolder() {
       const { terminal, terminalDiv, webcontainer } = await createTerminal(
         e.data
       );
-      console.log("eee");
-      document.querySelector("#app")?.appendChild(terminalDiv);
     };
 
     fsLoader.postMessage(handle);
@@ -133,6 +131,5 @@ const app = (
     </div>
   </div>
 );
-console.log(app);
 
 export default app;
