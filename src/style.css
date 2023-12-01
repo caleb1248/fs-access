@@ -42,7 +42,11 @@ button:hover {
   background-color: #555;
 }
 
-div.main {
+div#main {
   display: grid;
   grid-template-rows: 1fr 300px;
+}
+
+div#terminalContainer {
+  background-color: black;
 }

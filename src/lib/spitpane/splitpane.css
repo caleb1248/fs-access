@@ -1,0 +1,34 @@
+div#app {
+  display: flex;
+}
+
+.horizontal-resizer {
+  background-color: #cbd5e0;
+  cursor: ew-resize;
+  height: 100%;
+  width: 2px;
+}
+
+.vertical-resizer {
+  background-color: #cbd5e0;
+  cursor: ns-resize;
+  height: 2px;
+  width: 100%;
+}
+
+div#sidebar {
+  width: 200px;
+}
+
+div#main {
+  flex: 1;
+}
+
+div#editor {
+  display: flex;
+  flex: 1;
+}
+
+div#terminalContainer {
+  height: 0;
+}

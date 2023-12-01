@@ -123,9 +123,11 @@ const app = (
       <button on:click={() => openFile()}>Open File</button>
       <button on:click={() => openFolder()}>Open Folder</button>
     </div>
-    <div className="main">
+    <div className="horizontal-resizer"></div>
+    <div id="main">
       {editorDiv}
-      <div className="terminalContainer">
+      <div class="vertical-resizer"></div>
+      <div id="terminalContainer">
         <div className="terminal"></div>
       </div>
     </div>
