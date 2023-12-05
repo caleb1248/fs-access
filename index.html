@@ -12,6 +12,21 @@
     ></script>
   </head>
   <body>
+    <div id="app">
+      <div id="sidebar">
+        <button on:click={() => openFile()}>Open File</button>
+        <button on:click={() => openFolder()}>Open Folder</button>
+      </div>
+      <div>
+        <div style="position: absolute;top: 0;bottom: 0;left: -2px; right: 2px;background-color: white;",></div>
+      </div>
+      <div id="main">
+        <div id="editor-container"></div>
+        <div id="terminalContainer">
+          <div class="terminal"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
