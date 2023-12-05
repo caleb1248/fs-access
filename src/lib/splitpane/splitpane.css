@@ -1,6 +1,11 @@
 div#app {
   display: grid;
-  grid-template-columns: 200px 0 1fr;
+  grid-template-columns: 200px 1fr;
+}
+
+div#main {
+  display: grid;
+  grid-template-rows: 1fr 0;
 }
 
 div#sidebar {

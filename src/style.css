@@ -54,3 +54,7 @@ div#main {
 div#terminalContainer {
   background-color: black;
 }
+
+div#editor {
+  height: 100%;
+}
