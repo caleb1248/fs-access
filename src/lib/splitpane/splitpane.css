@@ -22,7 +22,3 @@ div.horizontal-resizer {
 .active-resizer {
   background-color: #007fd4;
 }
-
-div#terminalContainer {
-  height: 0;
-}

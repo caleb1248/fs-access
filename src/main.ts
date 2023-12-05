@@ -72,6 +72,7 @@ self.openFolder = async function () {
 
     fsLoader.onmessage = async (e) => {
       await createTerminal(e.data);
+      document.getElementById("main")!.style.gridTemplateRows = "1fr 300px";
     };
 
     fsLoader.postMessage(handle);

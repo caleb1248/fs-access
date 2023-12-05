@@ -8,7 +8,7 @@ async function createTerminal(files: FileSystemTree) {
   console.log("mounting files...");
   webcontainer.mount(files);
 
-  const terminalDiv = document.querySelector(".terminal") as HTMLDivElement;
+  const terminalDiv = document.getElementById("terminal")!;
 
   const fitAddon = new FitAddon();
 
@@ -22,6 +22,8 @@ async function createTerminal(files: FileSystemTree) {
       rows: terminal.rows,
     },
   });
+
+  terminal.onResize(() => fitAddon.fit());
 
   shellProcess.output.pipeTo(
     new WritableStream({
