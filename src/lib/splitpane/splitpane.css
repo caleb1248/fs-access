@@ -1,32 +1,21 @@
 div#app {
-  display: flex;
-}
-
-.horizontal-resizer {
-  background-color: #cbd5e0;
-  cursor: ew-resize;
-  height: 100%;
-  width: 2px;
-}
-
-.vertical-resizer {
-  background-color: #cbd5e0;
-  cursor: ns-resize;
-  height: 2px;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 200px 0 1fr;
 }
 
 div#sidebar {
   width: 200px;
 }
 
-div#main {
-  flex: 1;
+div.horizontal-resizer {
+  margin: 0;
+  padding: 0;
+  width: 0;
+  position: relative;
 }
 
-div#editor {
-  display: flex;
-  flex: 1;
+.active-resizer {
+  background-color: #007fd4;
 }
 
 div#terminalContainer {

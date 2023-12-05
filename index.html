@@ -6,19 +6,28 @@
     <title>Vite + TS</title>
     <!--For chromebook development when inspect panel is blocked.-->
     <!--Comment the script out when pushing-->
-    <script
+    <!-- <script
       src="https://cdn.jsdelivr.net/npm/eruda"
       onload="eruda.init()"
-    ></script>
+    ></script> -->
   </head>
   <body>
     <div id="app">
       <div id="sidebar">
-        <button on:click={() => openFile()}>Open File</button>
-        <button on:click={() => openFolder()}>Open Folder</button>
+        <button onclick="openFile()">Open File</button>
+        <button onclick="openFolder()">Open Folder</button>
       </div>
       <div>
-        <div style="position: absolute;top: 0;bottom: 0;left: -2px; right: 2px;background-color: white;",></div>
+        <!-- <div
+          style="
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: -2px;
+            right: 2px;
+            background-color: white;
+          "
+        ></div> -->
       </div>
       <div id="main">
         <div id="editor-container"></div>

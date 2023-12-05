@@ -43,7 +43,8 @@ function clearModels() {
   monaco.editor.getModels().forEach((model) => model.dispose());
 }
 
-async function openFile() {
+// @ts-ignore
+self.openFile = async function () {
   const [handle] = await showOpenFilePicker();
 
   if (await readWritePermission(handle)) {
@@ -60,18 +61,17 @@ async function openFile() {
     );
     editor.setModel(fileModel);
   } else alert("Error: Read/write access denied. Please try again.");
-}
+};
 
-async function openFolder() {
+// @ts-ignore
+self.openFolder = async function () {
   const handle = await showDirectoryPicker();
 
   if (await readWritePermission(handle)) {
     currentFolder = handle;
 
     fsLoader.onmessage = async (e) => {
-      const { terminal, terminalDiv, webcontainer } = await createTerminal(
-        e.data
-      );
+      await createTerminal(e.data);
     };
 
     fsLoader.postMessage(handle);
@@ -83,7 +83,7 @@ async function openFolder() {
     // );
     // editor.setModel(fileModel);
   } else alert("Error: Read/write access denied. Please try again.");
-}
+};
 
 async function save() {
   if (!currentFile) throw "No current file";
