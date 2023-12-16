@@ -1,14 +1,13 @@
 import "./style.css";
 import "xterm/css/xterm.css";
 import "./lib/splitpane/splitpane";
-import './lib/textmate/main';
-import './worker';
+import "./lib/textmate/main";
+import "./worker";
+
+import createTerminal from "./lib/webcontainer";
+import fsWorker from "./lib/fsLoader.worker?worker";
 
 import * as monaco from "monaco-editor";
-
-import fsWorker from "./lib/fsLoader.worker?worker";
-import createTerminal from "./lib/webcontainer";
-
 
 let currentFile: FileSystemFileHandle;
 let currentPath: string;
@@ -20,9 +19,9 @@ function clearModels() {
   monaco.editor.getModels().forEach((model) => model.dispose());
 }
 
-console.log('adding file listner')
-document.querySelector('button#file')?.addEventListener('click', async() =>{
-  console.log('file button clicked')
+console.log("adding file listner");
+document.querySelector("button#file")?.addEventListener("click", async () => {
+  console.log("file button clicked");
   const [handle] = await showOpenFilePicker();
 
   if (await readWritePermission(handle)) {
@@ -42,7 +41,7 @@ document.querySelector('button#file')?.addEventListener('click', async() =>{
 });
 
 // @ts-ignore
-document.querySelector('#folder')?.addEventListener('click', async() =>{
+document.querySelector("#folder")?.addEventListener("click", async () => {
   const handle = await showDirectoryPicker();
 
   if (await readWritePermission(handle)) {
@@ -58,13 +57,11 @@ document.querySelector('#folder')?.addEventListener('click', async() =>{
   } else alert("Error: Read/write access denied. Please try again.");
 });
 
-async function addModels(data: import('@webcontainer/api').FileSystemTree) {
-  
-}
+async function addModels(data: import("@webcontainer/api").FileSystemTree) {}
 
-async function addNodeModules(data:import('@webcontainer/api').FileSystemTree) {
-
-}
+async function addNodeModules(
+  data: import("@webcontainer/api").FileSystemTree
+) {}
 
 async function save() {
   if (!currentFile) throw "No current file";
