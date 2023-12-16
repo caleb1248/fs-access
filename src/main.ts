@@ -8,6 +8,7 @@ import createTerminal from "./lib/webcontainer";
 import fsWorker from "./lib/fsLoader.worker?worker";
 
 import * as monaco from "monaco-editor";
+import type { DirectoryNode, FileSystemTree } from "@webcontainer/api";
 
 let currentFile: FileSystemFileHandle;
 let currentPath: string;
@@ -48,7 +49,7 @@ document.querySelector("#folder")?.addEventListener("click", async () => {
     currentFolder = handle;
 
     fsLoader.onmessage = async (e) => {
-      await createTerminal(e.data);
+      await Promise.all([createTerminal(e.data), addModels(e.data)]);
       document.getElementById("main")!.style.gridTemplateRows = "1fr 300px";
     };
 
@@ -57,11 +58,27 @@ document.querySelector("#folder")?.addEventListener("click", async () => {
   } else alert("Error: Read/write access denied. Please try again.");
 });
 
-async function addModels(data: import("@webcontainer/api").FileSystemTree) {}
+async function addModels(tree: FileSystemTree, currentPath = "/") {
+  for (const fileName in tree) {
+    const file = tree[fileName];
+    if ("file" in file) {
+      const fileData = file.file.contents as Uint8Array;
+      monaco.editor.createModel(
+        new TextDecoder().decode(fileData),
+        undefined,
+        new monaco.Uri().with({ path: currentPath + fileName })
+      );
+    } else {
+      if (fileName === "node_modules") {
+        addNodeModules(file.directory);
+      } else {
+        addModels(file.directory, currentPath + fileName + "/");
+      }
+    }
+  }
+}
 
-async function addNodeModules(
-  data: import("@webcontainer/api").FileSystemTree
-) {}
+async function addNodeModules(data: FileSystemTree) {}
 
 async function save() {
   if (!currentFile) throw "No current file";
