@@ -8,7 +8,11 @@ import createTerminal from "./lib/webcontainer";
 import fsWorker from "./lib/fsLoader.worker?worker";
 
 import * as monaco from "monaco-editor";
-import type { DirectoryNode, FileSystemTree } from "@webcontainer/api";
+import type {
+  DirectoryNode,
+  FileNode,
+  FileSystemTree,
+} from "@webcontainer/api";
 
 let currentFile: FileSystemFileHandle;
 let currentPath: string;
@@ -20,9 +24,13 @@ function clearModels() {
   monaco.editor.getModels().forEach((model) => model.dispose());
 }
 
-console.log("adding file listner");
+function fileContents({ file: { contents } }: FileNode) {
+  return typeof contents === "string"
+    ? contents
+    : new TextDecoder().decode(contents);
+}
+
 document.querySelector("button#file")?.addEventListener("click", async () => {
-  console.log("file button clicked");
   const [handle] = await showOpenFilePicker();
 
   if (await readWritePermission(handle)) {
@@ -68,9 +76,8 @@ async function addModels(tree: FileSystemTree, currentPath = "/") {
   for (const fileName in tree) {
     const file = tree[fileName];
     if ("file" in file) {
-      const fileData = file.file.contents as Uint8Array;
       monaco.editor.createModel(
-        new TextDecoder().decode(fileData),
+        fileContents(file),
         undefined,
         new monaco.Uri().with({ path: currentPath + fileName })
       );
@@ -86,7 +93,23 @@ async function addModels(tree: FileSystemTree, currentPath = "/") {
   await Promise.all(stack);
 }
 
-async function addNodeModules(data: FileSystemTree) {}
+async function addNodeModules(data: FileSystemTree) {
+  for (const folderName in data) {
+    const folder = (<DirectoryNode>data[folderName]).directory;
+    const packageJSON = folder["package.json"] as FileNode | undefined;
+    if (!packageJSON) {
+      console.error(
+        "Error: no package.json file was found in package " + folderName
+      );
+
+      continue;
+    }
+
+    const json = JSON.parse(fileContents(packageJSON));
+    const types = json.typings || json.types;
+    console.log(types);
+  }
+}
 
 async function save() {
   if (!currentFile) throw "No current file";
