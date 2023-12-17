@@ -6,19 +6,17 @@ import "./worker";
 
 import createTerminal from "./lib/webcontainer";
 import fsWorker from "./lib/fsLoader.worker?worker";
+import nodemodulesWorker from "./lib/nodemodules.worker?worker";
 
 import * as monaco from "monaco-editor";
-import type {
-  DirectoryNode,
-  FileNode,
-  FileSystemTree,
-} from "@webcontainer/api";
+import type { FileNode, FileSystemTree } from "@webcontainer/api";
 
 let currentFile: FileSystemFileHandle;
 let currentPath: string;
 let currentFolder: FileSystemDirectoryHandle;
 
 const fsLoader = new fsWorker();
+const nodemodulesLoader = new nodemodulesWorker();
 
 function clearModels() {
   monaco.editor.getModels().forEach((model) => model.dispose());
@@ -94,21 +92,7 @@ async function addModels(tree: FileSystemTree, currentPath = "/") {
 }
 
 async function addNodeModules(data: FileSystemTree) {
-  for (const folderName in data) {
-    const folder = (<DirectoryNode>data[folderName]).directory;
-    const packageJSON = folder["package.json"] as FileNode | undefined;
-    if (!packageJSON) {
-      console.error(
-        "Error: no package.json file was found in package " + folderName
-      );
-
-      continue;
-    }
-
-    const json = JSON.parse(fileContents(packageJSON));
-    const types = json.typings || json.types;
-    console.log(types);
-  }
+  nodemodulesLoader.postMessage(data);
 }
 
 async function save() {

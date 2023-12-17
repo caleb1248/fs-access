@@ -1,9 +1,6 @@
 /// <reference lib="WebWorker"/>
 import type { FileSystemTree } from "@webcontainer/api";
 declare var self: DedicatedWorkerGlobalScope;
-// window==null;
-export {};
-
 self.addEventListener("message", async (e) => {
   const buffersToTransfer: ArrayBuffer[] = [];
 
