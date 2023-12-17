@@ -15,10 +15,8 @@ function fileContents({ file: { contents } }: FileNode) {
 }
 
 async function loadNodeModule(data: FileSystemTree, packageName: string) {
-  let noPackageJson = false;
-  const folder = (<DirectoryNode>data[packageName]).directory;
-  if (!folder) return;
-  const packageJSON = folder["package.json"] as FileNode | undefined;
+  if (!data) return;
+  const packageJSON = data["package.json"] as FileNode | undefined;
   if (!packageJSON) {
     console.error(
       "Error: no package.json file was found in package " + packageName
@@ -29,16 +27,24 @@ async function loadNodeModule(data: FileSystemTree, packageName: string) {
 
   const json = JSON.parse(fileContents(packageJSON));
   const types = json.typings || json.types;
-  console.log(types);
+  console.log(packageName, types);
 }
 
 self.addEventListener("message", (e) => {
   const data: FileSystemTree = e.data;
 
   for (const folderName in data) {
-    // TODO: add support for org scopes
+    if (folderName.startsWith("@")) {
+      for (const orgFolder in data[folderName]) {
+        const folder = (<DirectoryNode>(
+          (<DirectoryNode>data[folderName]).directory[orgFolder]
+        )).directory;
+        loadNodeModule(folder, `${folderName}/${orgFolder}`);
+      }
+      continue;
+    }
 
-    const folder = (<DirectoryNode>data[foerName]).directory;
-    loadNodeModule();
+    const folder = (<DirectoryNode>data[folderName]).directory;
+    loadNodeModule(folder, folderName);
   }
 });
