@@ -51,6 +51,10 @@ document.querySelector("#folder")?.addEventListener("click", async () => {
     fsLoader.onmessage = async (e) => {
       await Promise.all([createTerminal(e.data), addModels(e.data)]);
       document.getElementById("main")!.style.gridTemplateRows = "1fr 300px";
+
+      editor.setModel(
+        monaco.editor.getModel(new monaco.Uri().with({ path: "/src/main.ts" }))
+      );
     };
 
     fsLoader.postMessage(handle);
@@ -59,6 +63,8 @@ document.querySelector("#folder")?.addEventListener("click", async () => {
 });
 
 async function addModels(tree: FileSystemTree, currentPath = "/") {
+  const stack: Promise<void>[] = [];
+
   for (const fileName in tree) {
     const file = tree[fileName];
     if ("file" in file) {
@@ -70,12 +76,14 @@ async function addModels(tree: FileSystemTree, currentPath = "/") {
       );
     } else {
       if (fileName === "node_modules") {
-        addNodeModules(file.directory);
+        stack.push(addNodeModules(file.directory));
       } else {
-        addModels(file.directory, currentPath + fileName + "/");
+        stack.push(addModels(file.directory, currentPath + fileName + "/"));
       }
     }
   }
+
+  await Promise.all(stack);
 }
 
 async function addNodeModules(data: FileSystemTree) {}
