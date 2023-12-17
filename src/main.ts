@@ -55,7 +55,7 @@ document.querySelector("#folder")?.addEventListener("click", async () => {
     currentFolder = handle;
 
     fsLoader.onmessage = async (e) => {
-      await Promise.all([createTerminal(e.data), addModels(e.data)]);
+      await Promise.all([/*createTerminal(e.data),*/ addModels(e.data)]);
       document.getElementById("main")!.style.gridTemplateRows = "1fr 300px";
 
       editor.setModel(
@@ -133,3 +133,10 @@ const editor = monaco.editor.create(editorDiv, {
 });
 
 clearModels();
+
+monaco.editor.registerEditorOpener({
+  openCodeEditor(source, resource, selectionOrPosition) {
+    editor.setModel(monaco.editor.getModel(resource));
+    return true;
+  },
+});
