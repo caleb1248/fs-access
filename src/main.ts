@@ -135,8 +135,8 @@ const editor = monaco.editor.create(editorDiv, {
 clearModels();
 
 monaco.editor.registerEditorOpener({
-  openCodeEditor(source, resource, selectionOrPosition) {
-    editor.setModel(monaco.editor.getModel(resource));
+  openCodeEditor(source, resource) {
+    source.setModel(monaco.editor.getModel(resource));
     return true;
   },
 });
