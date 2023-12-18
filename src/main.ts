@@ -4,11 +4,13 @@ import "./lib/splitpane/splitpane";
 import "./lib/textmate/main";
 import "./worker";
 
-import createTerminal from "./lib/webcontainer";
+// import createTerminal from "./lib/webcontainer";
 import fsWorker from "./lib/fsLoader.worker?worker";
 import nodemodulesWorker from "./lib/nodemodules.worker?worker";
+import prettier, { type BuiltInParserName } from "prettier";
 
 import * as monaco from "monaco-editor";
+
 import type { FileNode, FileSystemTree } from "@webcontainer/api";
 
 let currentFile: FileSystemFileHandle;
@@ -140,3 +142,46 @@ monaco.editor.registerEditorOpener({
     return true;
   },
 });
+
+const usePrettier: (
+  parser: BuiltInParserName
+) => monaco.languages.DocumentFormattingEditProvider = (parser) => ({
+  async provideDocumentFormattingEdits(model) {
+    const text = await prettier.format(model.getValue(), {
+      singleQuote: true,
+      parser,
+    });
+
+    return [
+      {
+        range: model.getFullModelRange(),
+        text,
+      },
+    ];
+  },
+});
+
+monaco.languages.registerDocumentFormattingEditProvider(
+  "javascript",
+  usePrettier("typescript")
+);
+
+monaco.languages.registerDocumentFormattingEditProvider(
+  "typescript",
+  usePrettier("typescript")
+);
+
+monaco.languages.registerDocumentFormattingEditProvider(
+  "css",
+  usePrettier("css")
+);
+
+monaco.languages.registerDocumentFormattingEditProvider(
+  "json",
+  usePrettier("json")
+);
+
+monaco.languages.registerDocumentFormattingEditProvider(
+  "html",
+  usePrettier("html")
+);

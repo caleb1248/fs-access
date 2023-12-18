@@ -22,6 +22,7 @@
     "monaco-textmate": "^3.0.1",
     "onigasm": "^2.2.5",
     "path-browserify": "^1.0.1",
+    "prettier": "^3.1.1",
     "textextensions": "^6.7.0",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0"
