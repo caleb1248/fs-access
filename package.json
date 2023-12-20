@@ -10,14 +10,14 @@
   },
   "devDependencies": {
     "@types/wicg-file-system-access": "^2023.10.4",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
   },
   "dependencies": {
     "@webcontainer/api": "^1.1.8",
     "binaryextensions": "^6.7.0",
     "buffer": "^6.0.3",
-    "monaco-editor": "^0.44.0",
+    "monaco-editor": "^0.45.0",
     "monaco-editor-textmate": "^4.0.0",
     "monaco-textmate": "^3.0.1",
     "onigasm": "^2.2.5",
